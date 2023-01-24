@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <img id="listingimg" src="{{ listing.image }}" alt="{{ listing.title }}">
+
+    <h1>{{ listing.title }}</h1>
+
+    <p id="listingdescription">{{ listing.description }}</p>
+
+    <span>Starting Price: {{ listing.starting_price }}€</span>
+
+    <h2>50€</h2>
+{% endblock %}
