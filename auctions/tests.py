@@ -5,3 +5,5 @@ from django.test import TestCase
 # Git test
 
 # Another git test between computers
+
+# Using git Desktop app
