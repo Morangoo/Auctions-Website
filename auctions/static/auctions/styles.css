@@ -12,14 +12,26 @@ body {
 
 #listingdescription {
     margin-top: 10px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
 
 #listingprice {
-    color: red;
+    margin: 20px;
 }
 
 strong {
     font-size: large;
     margin-bottom: 10px;
+}
+
+.rmvwidth {
+    width: 15%;
+}
+
+.belowarea {
+    margin-left: 1%;
+}
+
+h4 {
+    margin-top: 25px;
 }

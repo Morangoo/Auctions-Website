@@ -9,5 +9,27 @@
 
     <span>Starting Price: {{ listing.starting_price }}€</span>
 
-    <h2 id="listingprice">500000€</h2>
+    <h2 id="listingprice">50€</h2>
+
+    <form>
+        <div class="form-group">
+            <small>0 bid(s) so far.</small>
+            <input type="number" class="form-control rmvwidth" placeholder="Bid">
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Place Bid">
+    </form>
+
+
+    <!-- Details & Commends -->
+    <div class="belowarea">
+        <h4>Details</h4>
+
+        <ul>
+            <li>Listed by: morango</li>
+            <li>Category: teste</li>
+        </ul>
+
+        <h4>Comments</h4>
+    </div>
 {% endblock %}
