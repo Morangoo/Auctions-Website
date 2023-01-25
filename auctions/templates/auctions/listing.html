@@ -1,24 +1,26 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <img id="listingimg" src="{{ listing.image }}" alt="{{ listing.title }}">
+    <div class="main-content">
+        <img id="listingimg" src="{{ listing.image }}" alt="{{ listing.title }}">
 
-    <h1>{{ listing.title }}</h1>
+        <h1>{{ listing.title }}</h1>
 
-    <p id="listingdescription">{{ listing.description }}</p>
+        <p id="listingdescription">{{ listing.description }}</p>
 
-    <span>Starting Price: {{ listing.starting_price }}€</span>
+        <span>Starting Price: {{ listing.starting_bid }}€</span>
 
-    <h2 id="listingprice">50€</h2>
+        <h2 id="listingprice">50€</h2>
 
-    <form>
-        <div class="form-group">
-            <small>0 bid(s) so far.</small>
-            <input type="number" class="form-control rmvwidth" placeholder="Bid">
-        </div>
+        <form>
+            <div class="form-group">
+                <small>0 bid(s) so far.</small>
+                <input type="number" class="form-control rmvwidth" placeholder="Bid">
+            </div>
 
-        <input type="submit" class="btn btn-primary" value="Place Bid">
-    </form>
+            <input type="submit" class="btn btn-primary" value="Place Bid">
+        </form>
+    </div>
 
 
     <!-- Details & Commends -->
@@ -26,10 +28,27 @@
         <h4>Details</h4>
 
         <ul>
-            <li>Listed by: morango</li>
-            <li>Category: teste</li>
+            <li>Listed by: <strong>{{ listing.seller.username }}</strong></li>
+            <li>Category: <strong>{{ listing.category.title }}</strong></li>
         </ul>
 
         <h4>Comments</h4>
+
+        <form>
+            <div class="input-group comment-form">
+                <input type="text" class="form-control" placeholder="Add a comment">
+                <input type="submit" class="btn btn-primary" value="Comment">
+            </div>
+
+            
+        </form>
+
+        {% for comment in listing.listing_comments.all %}
+            <div class="listingcomment">
+                <h6>{{ comment.user.username }}</h6>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% endfor %}
+
     </div>
 {% endblock %}

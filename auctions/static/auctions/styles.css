@@ -3,8 +3,8 @@ body {
 }
 
 #listingimg {
-    width: 40%;
-    height: 40%;
+    width: 800px;
+    height: auto;
     border: 1px solid #D3D3D3;
     float: left;
     margin-right: 20px;
@@ -19,13 +19,13 @@ body {
     margin: 20px;
 }
 
-strong {
-    font-size: large;
-    margin-bottom: 10px;
-}
-
 .rmvwidth {
     width: 15%;
+}
+
+.main-content {
+    width: 100%;
+    display: inline-block;
 }
 
 .belowarea {
@@ -34,4 +34,24 @@ strong {
 
 h4 {
     margin-top: 25px;
+}
+
+.comment-form {
+    width: 20%;
+    margin-bottom: 1%;
+}
+
+.comment-form .btn {
+    margin-left: 3%;
+}
+
+
+.listingcomment {
+    width: 100%;
+    margin-left: 1%;
+    padding-top: 1%;
+}
+
+.listingcomment p {
+    margin-top: -5px;
 }

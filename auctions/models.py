@@ -5,37 +5,43 @@ from django.db import models
 class User(AbstractUser):
     pass
 
-class Categories(models.Model):
+class Category(models.Model):
+    class Meta:
+        verbose_name_plural = "Categories"
+    
     title = models.CharField(max_length=64)
 
     def __str__(self):
         return f"{ self.title }"
+
 
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
-    starting_price = models.IntegerField()
+    starting_bid = models.IntegerField()
     image = models.URLField()
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name="categorylist")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="list_category")
+
     active = models.BooleanField()
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
 
     def __str__(self):
         return f"{ self.title }"
 
-class Comments(models.Model):
-    text = models.CharField(max_length=200)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="user_comments")
-    listing = models.ForeignKey(Listing, on_delete=models.DO_NOTHING, related_name="listing_comments")
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
+    content = models.CharField(max_length=255)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments")
 
     def __str__(self):
-        return f"{self.listing.title} - {self.user.username} - {self.text}"
+        return f"{ self.content }"
 
-class Bids(models.Model):
-    value = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="user_bids")
-    listing = models.ForeignKey(Listing, on_delete=models.DO_NOTHING, related_name="bids_history")
+
+class Bid(models.Model):
+    value = models.DecimalField(decimal_places=2)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_bids")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bids")
 
     def __str__(self):
-        return f"{self.listing.title} - {self.user.username} - {self.value}"
-
-
+        return f"{ self.value }"
