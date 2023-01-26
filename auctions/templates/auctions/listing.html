@@ -10,11 +10,13 @@
 
         <span>Starting Price: {{ listing.starting_bid }}€</span>
 
-        <h2 id="listingprice">50€</h2>
+        <!-- listing.listing_bids.values_list(value)|max -->
+        <h2 id="listingprice">{{ current_bid }}</h2>
 
         <form>
             <div class="form-group">
-                <small>0 bid(s) so far.</small>
+                <!-- listing.listing_bids.all|length -->
+                <small>{{ listing.listing_bids.all|length }} bid(s) so far.</small>
                 <input type="number" class="form-control rmvwidth" placeholder="Bid">
             </div>
 

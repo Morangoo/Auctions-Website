@@ -18,9 +18,10 @@ class Category(models.Model):
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
-    starting_bid = models.IntegerField()
     image = models.URLField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="list_category")
+
+    starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
 
     active = models.BooleanField()
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
@@ -39,7 +40,7 @@ class Comment(models.Model):
 
 
 class Bid(models.Model):
-    value = models.DecimalField(decimal_places=2)
+    value = models.DecimalField(max_digits=10 ,decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_bids")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bids")
 

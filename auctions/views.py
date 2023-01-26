@@ -66,6 +66,12 @@ def listing(request, listing_id):
     print(listing_id)
     listing = Listing.objects.get(pk=listing_id)
 
+    bidlist = listing.listing_bids.values_list("value")
+    print(bidlist)
+    print(max(bidlist))
+
+
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "current_bid": max(bidlist)
     })
