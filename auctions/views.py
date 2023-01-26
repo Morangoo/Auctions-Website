@@ -8,7 +8,11 @@ from .models import *
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    data = Listing.objects.all()
+
+    return render(request, "auctions/index.html", {
+        "listings": data
+    })
 
 
 def login_view(request):
@@ -62,6 +66,13 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+def category_list(request):
+    list = Category.objects.all()
+
+    return render(request, "auctions/categories.html", {
+        "list": list
+    })
+
 def listing(request, listing_id):
     print(listing_id)
     listing = Listing.objects.get(pk=listing_id)
@@ -74,4 +85,15 @@ def listing(request, listing_id):
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "current_bid": max(bidlist)
+    })
+
+def category_listings(request, categoryid):
+    data = Category.objects.get(id=categoryid)
+
+    title = data.title
+    listings = data.list_category.all()
+    
+    return render(request, "auctions/categorylistings.html", {
+        "title" : title,
+        "listings": listings
     })
