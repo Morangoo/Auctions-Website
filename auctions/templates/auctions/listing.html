@@ -11,7 +11,7 @@
         <span>Starting Price: {{ listing.starting_bid }}€</span>
 
         <!-- listing.listing_bids.values_list(value)|max -->
-        <h2 id="listingprice">{{ current_bid }}</h2>
+        <h2 id="listingprice">{{ listing.current_bid }}€</h2>
 
         {% if user == listing.seller %}
             <h1>TEST</h1>
@@ -21,7 +21,7 @@
                 <div class="form-group">
                     <!-- listing.listing_bids.all|length -->
                     <small>{{ listing.listing_bids.all|length }} bid(s) so far.</small>
-                    <input type="number" class="form-control rmvwidth" placeholder="Bid">
+                    <input type="number" class="form-control rmvwidth" name="bidvalue" placeholder="Bid">
                 </div>
 
                 <input type="submit" class="btn btn-primary" name="placebid" value="Place Bid">

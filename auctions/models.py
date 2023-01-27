@@ -23,6 +23,8 @@ class Listing(models.Model):
 
     starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
 
+    current_bid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_wins", null=True, blank=True)
 
     active = models.BooleanField()
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")

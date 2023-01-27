@@ -5,6 +5,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 
+from operator import attrgetter
+
 from .models import *
 
 
@@ -105,23 +107,55 @@ def listing(request, listing_id):
             comment.save()
 
         elif 'placebid' in request.POST:
-            print("bid bid")
+            # value user listing
+            value = request.POST["bidvalue"]
+            user = request.user
+            listing = Listing.objects.get(id=listing_id)
+
+            # Value checking 
+            if float(value) > listing.starting_bid and float(value) > listing.current_bid:
+                # Code to get a new listing
+                bid = Bid(value=value, user=user, listing=listing)
+                listing.current_bid = value
+                bid.save()
+                listing.save()
+
+
+            elif float(value) < listing.starting_bid:
+                # Error new value need to be higher than the starting bid
+                print("erro 1")
+            else:
+                # Error new value need to be higher than the current bid
+                print("erro 2")
+
+        elif 'closelisting' in request.POST:
+            print("teste")
+
+
+            # TESTES
+            f = Listing.objects.get(id=listing_id)
+            g = f.listing_bids.all()
+
+            h = max(g, key=attrgetter('value'))
+
+            print(h.user)
+
+            #
+
+
 
         return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
 
 
+
+
+
+
+
     listing = Listing.objects.get(pk=listing_id)
-
-    ### Test area
-
-    bidlist = listing.listing_bids.all()
-    print(bidlist)
-
-    ###
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "current_bid": 4.05,
         "user": request.user
     })
 
