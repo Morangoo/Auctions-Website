@@ -92,26 +92,32 @@ def category_list(request):
 def listing(request, listing_id):
     if request.method == "POST":
 
-        f = request.POST["content"]
-        print(f)
+        if 'placecomment' in request.POST:
 
-        if 'content' in request.POST:
-            print('teste')
+            # User, content, Listing
+
+            print(request.POST["content"])
+            user = request.user
+            content = request.POST["content"]
+            listing = Listing.objects.get(id=listing_id)
+
+            comment = Comment(user=user, content=content, listing=listing)
+            comment.save()
+
+        elif 'placebid' in request.POST:
+            print("bid bid")
 
         return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
 
 
-
-
-
-
-
     listing = Listing.objects.get(pk=listing_id)
 
-    bidlist = listing.listing_bids.values_list("value")
-    #print(bidlist)
-    print(request.user)
-    print(listing.seller)
+    ### Test area
+
+    bidlist = listing.listing_bids.all()
+    print(bidlist)
+
+    ###
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
@@ -148,7 +154,10 @@ def create_listing(request):
 
             return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing.id}))
 
-        return HttpResponseRedirect(reverse("createlisting"))
+        return render(request, "auctions/createlisting.html", {
+            "createform": CreateListingForm(),
+            "message": "Invalid data on the form"
+        })
     
     return render(request, "auctions/createlisting.html", {
         "createform": CreateListingForm()
