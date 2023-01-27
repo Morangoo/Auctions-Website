@@ -11,6 +11,16 @@ from .models import *
 class CreateListingForm(forms.Form):
     title = forms.CharField()
 
+    data = Category.objects.all()
+    Categories = []
+
+    for category in data:
+        Categories.append((category.id, category.title))
+
+    category = forms.ChoiceField(widget=forms.Select, choices=Categories)
+    imageurl = forms.URLField()
+    description = forms.CharField(widget=forms.Textarea())
+    starting_bid = forms.DecimalField(max_digits=10, decimal_places=2)
 
 
 def index(request):
@@ -100,11 +110,13 @@ def listing(request, listing_id):
 
     bidlist = listing.listing_bids.values_list("value")
     #print(bidlist)
-
+    print(request.user)
+    print(listing.seller)
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "current_bid": 4.05
+        "current_bid": 4.05,
+        "user": request.user
     })
 
 def category_listings(request, categoryid):
@@ -119,6 +131,25 @@ def category_listings(request, categoryid):
     })
 
 def create_listing(request):
+    if request.method == "POST":
+        form = CreateListingForm(request.POST)
 
+        if form.is_valid():
+            print("teste")
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            image = form.cleaned_data["imageurl"]
+            category = Category.objects.get(id=form.cleaned_data["category"])
+            starting_bid = form.cleaned_data["starting_bid"]
+            seller = request.user
+
+            listing = Listing(title=title, description=description, image=image, category=category, starting_bid=starting_bid, active=1, seller=seller)
+            listing.save()
+
+            return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing.id}))
+
+        return HttpResponseRedirect(reverse("createlisting"))
     
-    return render(request, "auctions/createlisting.html")
+    return render(request, "auctions/createlisting.html", {
+        "createform": CreateListingForm()
+    })

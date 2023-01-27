@@ -3,5 +3,11 @@
 {% block body %}
     <h2>Create Listing</h2>
 
-    
+    <div id="box-form">
+        <form action="{% url 'createlisting' %}" method="POST">
+            {% csrf_token %}
+            {{ createform }}
+            <input type="submit" value="Test">
+        </form>
+    </div>
 {% endblock %}

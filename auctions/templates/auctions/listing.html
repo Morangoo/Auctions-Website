@@ -13,15 +13,19 @@
         <!-- listing.listing_bids.values_list(value)|max -->
         <h2 id="listingprice">{{ current_bid }}</h2>
 
-        <form>
-            <div class="form-group">
-                <!-- listing.listing_bids.all|length -->
-                <small>{{ listing.listing_bids.all|length }} bid(s) so far.</small>
-                <input type="number" class="form-control rmvwidth" placeholder="Bid">
-            </div>
+        {% if user == listing.seller %}
+            <h1>TEST</h1>
+        {% else %}
+            <form>
+                <div class="form-group">
+                    <!-- listing.listing_bids.all|length -->
+                    <small>{{ listing.listing_bids.all|length }} bid(s) so far.</small>
+                    <input type="number" class="form-control rmvwidth" placeholder="Bid">
+                </div>
 
-            <input type="submit" class="btn btn-primary" value="Place Bid">
-        </form>
+                <input type="submit" class="btn btn-primary" value="Place Bid">
+            </form>
+        {% endif %}
     </div>
 
 

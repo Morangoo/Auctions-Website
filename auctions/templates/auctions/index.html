@@ -4,12 +4,14 @@
     <h2>Active Listings</h2>
 
     {% for listing in listings %}
-        <div class="listing-box">
-            <img class="box-img" src="{{ listing.image }}" alt="{{ listing.title }}">
-            <h2 class="box-title">{{ listing.title }}</h2>
-            <p>{{ listing.description }}</p>
-            <h2 class="box-price">4.05€</h2>
-            <small>{{ listing.listing_bids.all|length }} bid(s)</small>
-        </div>
+        {% if listing.active == 1 %}
+            <div class="listing-box">
+                <a href="{% url 'listing' listing.id %}"><img class="box-img" src="{{ listing.image }}" alt="{{ listing.title }}"></a>
+                <h2 class="box-title">{{ listing.title }}</h2>
+                <p>{{ listing.description }}</p>
+                <h2 class="box-price">4.05€</h2>
+                <small>{{ listing.listing_bids.all|length }} bid(s)</small>
+            </div>
+        {% endif %}
     {% endfor %}
 {% endblock %}
