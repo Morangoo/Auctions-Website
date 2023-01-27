@@ -36,12 +36,12 @@
 
         <h4>Comments</h4>
 
-        <form>
+        <form action="{% url 'listing' listing.id %}" method="post">
+            {% csrf_token %}
             <div class="input-group comment-form">
-                <input type="text" class="form-control" placeholder="Add a comment">
+                <input type="text" class="form-control" name="content" placeholder="Add a comment">
                 <input type="submit" class="btn btn-primary" value="Comment">
             </div>
-
             
         </form>
 

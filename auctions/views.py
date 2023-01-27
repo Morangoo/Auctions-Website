@@ -3,8 +3,14 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django import forms
 
 from .models import *
+
+
+class CreateListingForm(forms.Form):
+    title = forms.CharField()
+
 
 
 def index(request):
@@ -74,17 +80,31 @@ def category_list(request):
     })
 
 def listing(request, listing_id):
-    print(listing_id)
+    if request.method == "POST":
+
+        f = request.POST["content"]
+        print(f)
+
+        if 'content' in request.POST:
+            print('teste')
+
+        return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
+
+
+
+
+
+
+
     listing = Listing.objects.get(pk=listing_id)
 
     bidlist = listing.listing_bids.values_list("value")
-    print(bidlist)
-    print(max(bidlist))
+    #print(bidlist)
 
 
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "current_bid": max(bidlist)
+        "current_bid": 4.05
     })
 
 def category_listings(request, categoryid):
@@ -97,3 +117,8 @@ def category_listings(request, categoryid):
         "title" : title,
         "listings": listings
     })
+
+def create_listing(request):
+
+    
+    return render(request, "auctions/createlisting.html")
