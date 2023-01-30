@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+
 
 from operator import attrgetter
 
@@ -92,70 +94,64 @@ def category_list(request):
         "list": list
     })
 
+
+@login_required
 def listing(request, listing_id):
     if request.method == "POST":
         listing = Listing.objects.get(id=listing_id)
         user = request.user
 
-
         if 'placecomment' in request.POST:
             # User, content, Listing
-            content = request.POST["content"]
-
-            comment = Comment(user=user, content=content, listing=listing)
+            comment = Comment(user=user, content=request.POST["content"], listing=listing)
             comment.save()
 
         elif 'placebid' in request.POST:
-            # value user listing
+            # new bid value
             value = request.POST["bidvalue"]
 
             # Value checking 
             if float(value) > listing.starting_bid and float(value) > listing.current_bid:
-                # Code to get a new listing
+                # Create a new bid
                 bid = Bid(value=value, user=user, listing=listing)
                 listing.current_bid = value
                 bid.save()
                 listing.save()
 
-
             elif float(value) < listing.starting_bid:
                 # Error new value need to be higher than the starting bid
-                print("erro 1")
+                return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "user": request.user,
+                    "message": "A new bid needs to be higher than the starting price."
+                })
             else:
                 # Error new value need to be higher than the current bid
-                print("erro 2")
+                return render(request, "auctions/listing.html", {
+                    "listing": listing,
+                    "user": request.user,
+                    "message": "A new bid needs to be higher than the current bid."
+                })
 
         elif 'closelisting' in request.POST:
-            listing.active = 0
-
-            winner = max(listing.listing_bids.all(), key=attrgetter('value'))
-            print(winner.user)
+            listing.active = False
+            winnerbid = max(listing.listing_bids.all(), key=attrgetter('value'))
 
             # Code to set the winner
-            #listing.winner = winner.user
+            listing.winner = winnerbid.user
+            listing.save()
 
+            return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
+        elif 'watchlistadd' in request.POST:
+            listing.watchlist.add(user)
+            return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
 
-
-
-
-
-            # TESTES
-            #f = Listing.objects.get(id=listing_id)
-            #g = f.listing_bids.all()
-            #
-            #h = max(g, key=attrgetter('value'))
-            #
-            #print(h.user)
-
-            #
-
+        elif 'watchlistremove' in request.POST:
+            listing.watchlist.remove(user)
+            return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
 
 
         return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
-
-
-
-
 
 
 
@@ -177,6 +173,7 @@ def category_listings(request, categoryid):
         "listings": listings
     })
 
+@login_required
 def create_listing(request):
     if request.method == "POST":
         form = CreateListingForm(request.POST)
@@ -204,20 +201,29 @@ def create_listing(request):
         "createform": CreateListingForm()
     })
 
+@login_required
 def watchlist(request):
     list = request.user.user_watchlist.all()
-
-    print(list)
 
     return render(request, "auctions/index.html", {
         "listings": list,
         "title": "Watchlist"
     })
 
-
+@login_required
 def closed_listings(request):
-    pass
+    list = request.user.user_listings.filter(active=False)
 
+    return render(request, "auctions/closedlistings.html", {
+        "listings": list,
+        "title": "Closed Listings"
+    })
 
-def wins(request):
-    pass
+@login_required
+def won_listings(request):
+    list = request.user.user_wins.all()
+
+    return render(request, "auctions/closedlistings.html", {
+        "listings": list,
+        "title": "Won Listings"
+    })

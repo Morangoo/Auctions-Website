@@ -2,6 +2,7 @@ body {
     padding: 10px;
 }
 
+/* Listing page styles */
 #listingimg {
     width: 800px;
     height: auto;
@@ -54,4 +55,58 @@ h4 {
 
 .listingcomment p {
     margin-top: -5px;
+}
+
+.btn-info {
+    margin-top: 2%;
+}
+
+/* Index page design */
+.listing-box {
+    margin: 1%;
+    width: auto;
+    overflow: auto;
+    
+    border: 1px solid #D3D3D3;
+}
+
+.box-img {
+    width: 220px;
+    height: 220px;
+    margin: 10px;
+    float: left;
+}
+
+.box-title {
+    margin-top: 10px;
+}
+
+.box-price {
+    margin-bottom: 0px;
+}
+
+/* Create Listing Design */
+
+#box-form {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 1%;
+}
+
+#box-form input, select, textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#box-form input[type=submit] {
+    background-color: #0d6efd;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
 }

@@ -10,7 +10,7 @@
         <form action="{% url 'createlisting' %}" method="POST">
             {% csrf_token %}
             {{ createform }}
-            <input type="submit" value="Test">
+            <input type="submit" value="Create">
         </form>
     </div>
 {% endblock %}

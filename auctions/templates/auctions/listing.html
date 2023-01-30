@@ -1,6 +1,11 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
     <div class="main-content">
         <img id="listingimg" src="{{ listing.image }}" alt="{{ listing.title }}">
 
@@ -8,28 +13,62 @@
 
         <p id="listingdescription">{{ listing.description }}</p>
 
+        {% if listing.active == 1 %}
+
         <span>Starting Price: {{ listing.starting_bid }}€</span>
-
-        <!-- listing.listing_bids.values_list(value)|max -->
-        <h2 id="listingprice">{{ listing.current_bid }}€</h2>
-
-        {% if user == listing.seller %}
-            <!-- Button to close the form -->
-            <form action="{% url 'listing' listing.id %}" method="post">
-                <input type="submit" class="btn btn-danger" name="closelisting" value="Close Listing">
-            </form>
-
+        {% if listing.current_bid != 0 %}
+            <h2 id="listingprice">{{ listing.current_bid }}€</h2>
         {% else %}
-            <form action="{% url 'listing' listing.id %}" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <!-- listing.listing_bids.all|length -->
-                    <small>{{ listing.listing_bids.all|length }} bid(s) so far.</small>
-                    <input type="number" class="form-control rmvwidth" name="bidvalue" placeholder="Bid">
-                </div>
+            <h2 id="listingprice">{{ listing.starting_bid }}€</h2>
+        {% endif %}
+        <small>{{ listing.listing_bids.all|length }} bid(s) so far.</small>
 
-                <input type="submit" class="btn btn-primary" name="placebid" value="Place Bid">
-            </form>
+            {% if user == listing.seller %}
+                <!-- Button to close the form -->
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-danger" name="closelisting" value="Close Listing">
+                </form>
+
+            {% else %}
+                <!-- Form to place a new bid -->
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="number" step=".01" class="form-control rmvwidth" name="bidvalue" placeholder="Bid">
+                    </div>
+
+                    <input type="submit" class="btn btn-primary" name="placebid" value="Place Bid">
+                </form>
+
+                {% if listing in user.user_watchlist.all %}
+                    <!-- Button to remove from watchlist -->
+                    <form action="{% url 'listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-info" name="watchlistremove" value="Remove from watchlist">
+                    </form>
+                {% else %}
+                    <!-- Button to add to the watchlist -->
+                    <form action="{% url 'listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-info" name="watchlistadd" value="Add to watchlist">
+                    </form>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {% if user == listing.winner %}
+                <!-- Won the listing case -->
+                <h3>You won!</h3>
+                <p>You won this listing with the highest bid with a value of <strong>{{ listing.current_bid }}€</strong>.</p>
+            {% elif user == listing.seller %}
+                <!-- User closed the listing case -->
+                <h3>You closed this listing</h3>
+                <p>You sold your listing for <strong>{{ listing.current_bid }}€</strong>.</p>
+            {% else %}
+                <!-- Closed listing case -->
+                <h3>Closed</h3>
+                <p>This listing has been closed.</p>
+            {% endif %}
         {% endif %}
     </div>
 
@@ -45,14 +84,16 @@
 
         <h4>Comments</h4>
 
-        <form action="{% url 'listing' listing.id %}" method="post">
-            {% csrf_token %}
-            <div class="input-group comment-form">
-                <input type="text" class="form-control" name="content" placeholder="Add a comment">
-                <input type="submit" class="btn btn-primary" name="placecomment" value="Comment">
-            </div>
-            
-        </form>
+        {% if listing.active == 1 %}
+            <!-- Add new comment only when the listing is active -->
+            <form action="{% url 'listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <div class="input-group comment-form">
+                    <input type="text" class="form-control" name="content" placeholder="Add a comment">
+                    <input type="submit" class="btn btn-primary" name="placecomment" value="Comment">
+                </div>
+            </form>
+        {% endif %}
 
         {% for comment in listing.listing_comments.all %}
             <div class="listingcomment">
