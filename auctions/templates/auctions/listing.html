@@ -14,7 +14,11 @@
         <h2 id="listingprice">{{ listing.current_bid }}€</h2>
 
         {% if user == listing.seller %}
-            <h1>TEST</h1>
+            <!-- Button to close the form -->
+            <form action="{% url 'listing' listing.id %}" method="post">
+                <input type="submit" class="btn btn-danger" name="closelisting" value="Close Listing">
+            </form>
+
         {% else %}
             <form action="{% url 'listing' listing.id %}" method="post">
                 {% csrf_token %}

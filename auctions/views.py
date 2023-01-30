@@ -29,7 +29,8 @@ def index(request):
     data = Listing.objects.all()
 
     return render(request, "auctions/index.html", {
-        "listings": data
+        "listings": data,
+        "title": "Active Listings"
     })
 
 
@@ -93,15 +94,13 @@ def category_list(request):
 
 def listing(request, listing_id):
     if request.method == "POST":
+        listing = Listing.objects.get(id=listing_id)
+        user = request.user
+
 
         if 'placecomment' in request.POST:
-
             # User, content, Listing
-
-            print(request.POST["content"])
-            user = request.user
             content = request.POST["content"]
-            listing = Listing.objects.get(id=listing_id)
 
             comment = Comment(user=user, content=content, listing=listing)
             comment.save()
@@ -109,8 +108,6 @@ def listing(request, listing_id):
         elif 'placebid' in request.POST:
             # value user listing
             value = request.POST["bidvalue"]
-            user = request.user
-            listing = Listing.objects.get(id=listing_id)
 
             # Value checking 
             if float(value) > listing.starting_bid and float(value) > listing.current_bid:
@@ -129,16 +126,26 @@ def listing(request, listing_id):
                 print("erro 2")
 
         elif 'closelisting' in request.POST:
-            print("teste")
+            listing.active = 0
+
+            winner = max(listing.listing_bids.all(), key=attrgetter('value'))
+            print(winner.user)
+
+            # Code to set the winner
+            #listing.winner = winner.user
+
+
+
+
 
 
             # TESTES
-            f = Listing.objects.get(id=listing_id)
-            g = f.listing_bids.all()
-
-            h = max(g, key=attrgetter('value'))
-
-            print(h.user)
+            #f = Listing.objects.get(id=listing_id)
+            #g = f.listing_bids.all()
+            #
+            #h = max(g, key=attrgetter('value'))
+            #
+            #print(h.user)
 
             #
 
@@ -165,7 +172,7 @@ def category_listings(request, categoryid):
     title = data.title
     listings = data.list_category.all()
     
-    return render(request, "auctions/categorylistings.html", {
+    return render(request, "auctions/index.html", {
         "title" : title,
         "listings": listings
     })
@@ -196,3 +203,21 @@ def create_listing(request):
     return render(request, "auctions/createlisting.html", {
         "createform": CreateListingForm()
     })
+
+def watchlist(request):
+    list = request.user.user_watchlist.all()
+
+    print(list)
+
+    return render(request, "auctions/index.html", {
+        "listings": list,
+        "title": "Watchlist"
+    })
+
+
+def closed_listings(request):
+    pass
+
+
+def wins(request):
+    pass

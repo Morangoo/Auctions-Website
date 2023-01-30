@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>{{ title }}</h2>
 
     {% for listing in listings %}
         {% if listing.active == 1 %}
@@ -9,7 +9,13 @@
                 <a href="{% url 'listing' listing.id %}"><img class="box-img" src="{{ listing.image }}" alt="{{ listing.title }}"></a>
                 <h2 class="box-title">{{ listing.title }}</h2>
                 <p>{{ listing.description }}</p>
-                <h2 class="box-price">4.05€</h2>
+                <h2 class="box-price">
+                    {% if listing.current_bid > 0 %}
+                        {{ listing.current_bid }}€
+                    {% else %}
+                        {{ listing.starting_bid }}€
+                    {% endif %}
+                </h2>
                 <small>{{ listing.listing_bids.all|length }} bid(s)</small>
             </div>
         {% endif %}
